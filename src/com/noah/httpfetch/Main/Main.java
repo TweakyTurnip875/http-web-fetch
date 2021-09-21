@@ -8,16 +8,18 @@ import java.lang.StringBuilder;
 import java.io.InputStreamReader;
 import java.io.*;
 import com.google.gson.*;
+import com.noah.httpfetch.AuthMsg.AuthMsg;
 
 public class Main {
 
 	public static String getData() {
 		HttpURLConnection c = null;
 		try {
-			URL url = new URL("https://jsonplaceholder.typicode.com/posts/1/");
+			URL url = new URL("http://api.plos.org/search?q=title:DNA");
 			c = (HttpURLConnection) url.openConnection();
 			c.setRequestMethod("GET");
 			c.setUseCaches(false);
+			c.setRequestProperty("Content-length", "0");
 			c.setAllowUserInteraction(false);
 			c.addRequestProperty("Content-length", "0");
 			c.connect();
@@ -33,7 +35,7 @@ public class Main {
 					sb.append(line + "\n");
 				}
 				br.close();
-				System.out.println();
+				return sb.toString();
 			}
 
 		} catch (Exception MalformedURLException) {
@@ -48,6 +50,12 @@ public class Main {
 			}
 		}
 		return null;
+	}
+	public static void main(String[] args) {
+		String data = getData();
+		AuthMsg message = new Gson().fromJson(data, AuthMsg.class);
+		
+		System.out.println(message);
 	}
 
 }
